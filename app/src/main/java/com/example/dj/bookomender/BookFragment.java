@@ -1,0 +1,273 @@
+package com.example.dj.bookomender;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+/**
+ * Created by DJ on 3/16/2015.
+ */
+public class BookFragment extends Fragment {
+    String isbn;
+    TextView txtTitle,txtAuthor,txtRating,txtDescription;
+    ImageView imgBook;
+    Button btnToRead;
+
+    public BookFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_book, container, false);
+        isbn = getArguments().getString("ISBN");
+
+        txtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
+        txtAuthor = (TextView) rootView.findViewById(R.id.txtAuthor);
+        txtRating = (TextView) rootView.findViewById(R.id.txtRating);
+        txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
+        imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
+        btnToRead = (Button) rootView.findViewById(R.id.btnToRead);
+
+        BookTask searchTask = new BookTask();
+        searchTask.execute(isbn);
+        return rootView;
+    }
+
+
+    public class BookTask extends AsyncTask<String,Void,Bundle> {
+        private final String LOG_TAG = getClass().getSimpleName();
+        StringBuffer buffer;
+        HttpURLConnection urlConnection;
+        BufferedReader reader;
+        String resultJsonStr = null;
+        private static final String RESULT_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
+        private static final String QUERY_PARAM = "q";
+        private static final String MAX_RESULT = "maxResults";
+        private static final String ORDER_BY = "orderBy";
+        private static final String VALUE_SINGLE_RESULT = "1";
+        private static final String VALUE_ORDER_BY = "relevance";
+        Bundle bundle = null;
+
+        public BookTask(){}
+
+        @Override
+        protected Bundle doInBackground(String... params) {
+            try {
+                Log.v("OI",params[0]);
+                bundle = getItems(connectGoodreads(params[0]));
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                return null;
+            }
+            finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(LOG_TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return bundle;
+        }
+
+        private String getJsonString(URL url) throws IOException {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            buffer = new StringBuffer();
+            if (inputStream == null) {
+                return null;
+            }
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line + "\n");
+            }
+
+            if (buffer.length() == 0) {
+                return null;
+            }
+            return buffer.toString();
+        }
+
+        private String connectGoodreads(String value_isbn)    {
+            final String M_RESULT_BASE_URL = "https://www.goodreads.com/book/isbn?";
+            final String M_ISBN = "isbn";
+            final String M_KEY = "key";
+
+            final String M_VALUE_KEY = "UpH4L0IYjAXcezlfg0yT2Q";
+
+            String xml = null;
+            try {
+                Uri builtUri = Uri.parse(M_RESULT_BASE_URL).buildUpon()
+                        .appendQueryParameter(M_ISBN, value_isbn)
+                        .appendQueryParameter(M_KEY,M_VALUE_KEY)
+                        .build();
+                URL url = new URL(builtUri.toString());
+
+                InputStream is = url.openStream();
+                int ptr = 0;
+                StringBuilder builder = new StringBuilder();
+                while ((ptr = is.read()) != -1) {
+                    builder.append((char) ptr);
+                }
+
+                xml = builder.toString();
+                try {
+                    return XML.toJSONObject(xml).toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private Bundle getItems(String resultJsonStr)
+                throws JSONException {
+            try {
+                final String GOOD_READS_RESPONSE = "GoodreadsResponse";
+                final String BOOK = "book";
+
+                final String M_TITLE = "title";
+                final String M_ISBN_13 = "isbn13";
+                final String M_DESC = "description";
+                final String M_IMG = "small_image_url";
+                final String M_RATE = "average_rating";
+                final String M_AUTHORS = "authors";
+                final String M_AUTHOR = "author";
+                final String M_AUTHOR_NAME = "name";
+
+                JSONObject jsonObject = new JSONObject(resultJsonStr);
+                JSONObject jsonGoodReadsResponse = jsonObject.getJSONObject(GOOD_READS_RESPONSE);
+                JSONObject jsonBook = jsonGoodReadsResponse.getJSONObject(BOOK);
+
+                String bookTitle = jsonBook.getString(M_TITLE);
+                String bookIsbn = jsonBook.getString(M_ISBN_13);
+                String desc = jsonBook.getString(M_DESC);
+                String rate = jsonBook.getString(M_RATE);
+                String img = jsonBook.getString(M_IMG).replace("s/", "l/");
+                img = img.replace("kl/", "ks/");
+                Log.v("OI", img);
+                String authorName = null;
+                JSONObject jsonAuthors = jsonBook.getJSONObject(M_AUTHORS);
+
+
+                try {
+                    JSONArray arrayAuthor = jsonAuthors.getJSONArray(M_AUTHOR);
+                    for (int i = 0; i < arrayAuthor.length(); i++) {
+                        if (i == 0) {
+                            authorName = arrayAuthor.getJSONObject(i).getString(M_AUTHOR_NAME);
+                        } else if (i != arrayAuthor.length()) {
+                            authorName = authorName + ", " + arrayAuthor.getJSONObject(i).getString(M_AUTHOR_NAME);
+                        }
+                    }
+                } catch (JSONException e) {
+                    JSONObject jsonAuthor = jsonAuthors.getJSONObject(M_AUTHOR);
+                    authorName = jsonAuthor.getString(M_AUTHOR_NAME);
+                }
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("M_TITLE", bookTitle);
+                bundle.putString("M_ISBN_13", bookIsbn);
+                bundle.putString("M_AUTHOR_NAME", authorName);
+                bundle.putString("M_DESC", desc);
+                bundle.putString("M_RATE", rate);
+                bundle.putString("M_IMG", img);
+
+                return bundle;
+            }catch(NullPointerException e){
+                return null;
+            }
+        }
+        String post_title,post_desc,post_author,post_rate,post_isbn,post_img;
+        @Override
+        protected void onPostExecute(Bundle bundle) {
+            super.onPostExecute(bundle);
+            try {
+                post_title = bundle.getString("M_TITLE");
+                post_desc = bundle.getString("M_DESC").replace("<br>", "\n").replace("<p>", "\n\n").replace("</p>", "").replace("<em>", "").replace("</em>", "");
+                post_author = bundle.getString("M_AUTHOR_NAME");
+                post_rate = bundle.getString("M_RATE");
+                post_isbn = bundle.getString("M_ISBN_13");
+                post_img = bundle.getString("M_IMG");
+
+                txtTitle.setText(post_title);
+                txtDescription.setText(post_desc);
+                txtAuthor.setText(post_author);
+                txtRating.setText(post_rate);
+                Picasso.with(getActivity())
+                        .load(bundle.getString("M_IMG"))
+                        .resize(500, 810)
+                        .centerCrop()
+                        .into(imgBook);
+
+                btnToRead.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BookDBHelper bookDBHelper = new BookDBHelper(getActivity());
+                        SQLiteDatabase sqLiteDatabase = bookDBHelper.getWritableDatabase();
+
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(BookContract.BookEntry.COLUMN_BOOK_TITLE, post_title);
+                        contentValues.put(BookContract.BookEntry.COLUMN_DESC, post_desc);
+                        contentValues.put(BookContract.BookEntry.COLUMN_AUTHOR, post_author);
+                        contentValues.put(BookContract.BookEntry.COLUMN_RATING, post_rate);
+                        contentValues.put(BookContract.BookEntry.COLUMN_ISBN, post_isbn);
+                        contentValues.put(BookContract.BookEntry.COLUMN_IMG, post_img);
+
+                        long locationRowId = sqLiteDatabase.insert(BookContract.BookEntry.TABLE_NAME, null, contentValues);
+
+                        if (locationRowId != -1) {
+                            Cursor cursor = sqLiteDatabase.query(BookContract.BookEntry.TABLE_NAME, null, null, null, null, null, null);
+                            if (cursor.moveToFirst()) {
+                                //do the thing
+                            }
+                        }
+                    }
+                });
+            }catch(NullPointerException e){
+
+            }
+        }
+    }
+}
