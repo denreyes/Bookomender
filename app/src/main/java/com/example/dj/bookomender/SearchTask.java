@@ -1,5 +1,6 @@
 package com.example.dj.bookomender;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,10 +36,11 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
     BufferedReader reader;
     private static final String RESULT_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
     private static final String QUERY_PARAM = "q";
-    private static final String MAX_RESULT = "maxResults";
+    private  static final String MAX_RESULT = "maxResults";
     private static final String ORDER_BY = "orderBy";
     private static final String VALUE_SINGLE_RESULT = "1";
     private static final String VALUE_ORDER_BY = "relevance";
+    ProgressDialog progressDialog;
     StringPretifier stringPretifier;
     Context context;
     ListView listResult;
@@ -46,6 +48,12 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
     public SearchTask(Context context, ListView listResult){
         this.context = context;
         this.listResult = listResult;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressDialog = ProgressDialog.show(context, "Progress Dialog Title Text", "Process Description Text", true);
     }
 
     @Override
@@ -282,6 +290,7 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
         if(bundle != null){
             Toast.makeText(context, bundle.getString("M_TITLE"), Toast.LENGTH_LONG).show();
             final ResultAdapter adapter = new ResultAdapter(bundle,context);
+            progressDialog.dismiss();
             listResult.setAdapter(adapter);
             listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -292,6 +301,10 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
                     context.startActivity(i);
                 }
             });
+        }
+        else {
+            progressDialog.dismiss();
+            Toast.makeText(context,"OI",Toast.LENGTH_LONG).show();
         }
     }
 }

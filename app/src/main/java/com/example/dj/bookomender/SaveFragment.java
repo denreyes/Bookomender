@@ -19,7 +19,6 @@ import com.squareup.picasso.Picasso;
  * Created by DJ on 3/16/2015.
  */
 public class SaveFragment extends Fragment{
-    private static final int RESULT_LOADER = 0;
 
     ListView listResult;
 
@@ -51,10 +50,14 @@ public class SaveFragment extends Fragment{
                 txtTitle.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_TITLE)));
 //                txtDescription.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_DESC)));
                 txtAuthor.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_AUTHOR)));
-                txtRating.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING)));
+
+                String x="";
+                for(int y=0;y<((int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING)))));y++)
+                    x = x+"*";
+                txtRating.setText(x);
                 Picasso.with(context)
                         .load(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_IMG)))
-                        .resize(50, 81)
+                        .resize(80, 131)
                         .centerCrop()
                         .into(imgBook);
             }

@@ -69,9 +69,13 @@ public class ResultAdapter extends BaseAdapter {
         TextView txtRating = (TextView)row.findViewById(R.id.txtRating);
         ImageView imageView = (ImageView)row.findViewById(R.id.imgBook);
 
+        String x="";
+        for(int y=0;y<((int) Math.round(Double.parseDouble(s_rating[position])));y++)
+            x = x+"*";
+
         txtTitle.setText(s_title[position]);
         txtAuthor.setText(s_author[position]);
-        txtRating.setText(s_rating[position]);
+        txtRating.setText(x);
         Picasso.with(context)
                 .load(s_image[position])
                 .resize(80, 130)
