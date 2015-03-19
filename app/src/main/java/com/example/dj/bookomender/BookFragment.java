@@ -1,19 +1,23 @@
 package com.example.dj.bookomender;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+import org.jsoup.Jsoup;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +40,7 @@ import java.net.URL;
  */
 public class BookFragment extends Fragment {
     String isbn;
-    TextView txtTitle,txtAuthor,txtRating,txtDescription;
+    TextView txtTitle,txtAuthor,txtRating,txtDescription,txtSRating;
     ImageView imgBook;
     Button btnToRead;
 
@@ -51,6 +56,7 @@ public class BookFragment extends Fragment {
         txtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
         txtAuthor = (TextView) rootView.findViewById(R.id.txtAuthor);
         txtRating = (TextView) rootView.findViewById(R.id.txtRating);
+        txtSRating = (TextView) rootView.findViewById(R.id.txtSRating);
         txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
         imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
         btnToRead = (Button) rootView.findViewById(R.id.btnToRead);
@@ -219,13 +225,18 @@ public class BookFragment extends Fragment {
                 return null;
             }
         }
+
         String post_title,post_desc,post_author,post_rate,post_isbn,post_img;
         @Override
         protected void onPostExecute(Bundle bundle) {
             super.onPostExecute(bundle);
             try {
                 post_title = bundle.getString("M_TITLE");
-                post_desc = bundle.getString("M_DESC").replace("<br>", "\n").replace("<p>", "\n\n").replace("</p>", "").replace("<em>", "").replace("</em>", "");
+
+                String text = Jsoup.parse(bundle.getString("M_DESC").replaceAll("(?i)<br[^>]*>", "CH4NG3S")
+                        .replaceAll("<p>", "CH4NG3S").replaceAll("</p>", "CH4NG3SCH4NG3S")).text();
+                post_desc = text.replaceAll("CH4NG3S", "\n");
+
                 post_author = bundle.getString("M_AUTHOR_NAME");
                 post_rate = bundle.getString("M_RATE");
                 post_isbn = bundle.getString("M_ISBN_13");
@@ -234,7 +245,17 @@ public class BookFragment extends Fragment {
                 txtTitle.setText(post_title);
                 txtDescription.setText(post_desc);
                 txtAuthor.setText(post_author);
-                txtRating.setText(post_rate);
+                txtRating.setText("Averate Rating: "+ post_rate);
+
+                String x="★★★★★";
+                int aveRating = (int) Math.round(Double.parseDouble(post_rate));
+
+                final SpannableStringBuilder sb = new SpannableStringBuilder(x);
+                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.dark_teal));
+                sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                txtSRating.setText(sb);
+
                 Picasso.with(getActivity())
                         .load(bundle.getString("M_IMG"))
                         .resize(500, 810)
@@ -257,14 +278,16 @@ public class BookFragment extends Fragment {
 
                         long locationRowId = sqLiteDatabase.insert(BookContract.BookEntry.TABLE_NAME, null, contentValues);
 
-                        if (locationRowId != -1) {
-                            Cursor cursor = sqLiteDatabase.query(BookContract.BookEntry.TABLE_NAME, null, null, null, null, null, null);
-                            if (cursor.moveToFirst()) {
-                                //do the thing
-                            }
+                        if (locationRowId == -1) {
+                            Toast.makeText(getActivity(),"Book Already exists.",Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getActivity(),post_title+" Added.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
+                ScrollView bookView = (ScrollView)getActivity().findViewById(R.id.bookView);
+                bookView.setVisibility(View.VISIBLE);
             }catch(NullPointerException e){
 
             }

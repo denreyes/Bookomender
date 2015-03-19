@@ -2,6 +2,9 @@ package com.example.dj.bookomender;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,13 +72,17 @@ public class ResultAdapter extends BaseAdapter {
         TextView txtRating = (TextView)row.findViewById(R.id.txtRating);
         ImageView imageView = (ImageView)row.findViewById(R.id.imgBook);
 
-        String x="";
-        for(int y=0;y<((int) Math.round(Double.parseDouble(s_rating[position])));y++)
-            x = x+"*";
+        String x="★★★★★";
+        int aveRating = (int) Math.round(Double.parseDouble(s_rating[position]));
+
+        final SpannableStringBuilder sb = new SpannableStringBuilder(x);
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources().getColor(R.color.teal));
+        sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        txtRating.setText(sb);
 
         txtTitle.setText(s_title[position]);
         txtAuthor.setText(s_author[position]);
-        txtRating.setText(x);
         Picasso.with(context)
                 .load(s_image[position])
                 .resize(80, 130)

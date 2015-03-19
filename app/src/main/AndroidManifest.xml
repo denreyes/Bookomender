@@ -22,7 +22,8 @@
         <activity android:name=".ResultActivity" />
         <activity
             android:name=".SaveActivity"
-            android:label="SaveActivity" >
+            android:label="Saved Books"
+            android:theme="@style/ActionBar.Solid.Sunshine.NoTitle" >
         </activity>
         <activity android:name=".BookActivity"/>
     </application>

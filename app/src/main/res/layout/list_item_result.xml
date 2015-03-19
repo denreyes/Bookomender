@@ -42,10 +42,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="***"
+                android:text="str"
                 android:layout_marginTop="-10dp"
                 android:id="@+id/txtRating"
-                android:textSize="50sp"/>
+                android:textColor="@color/light_grey"
+                android:textSize="35sp"/>
 
         </LinearLayout>
 

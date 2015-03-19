@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.Random;
 
 /**
  * Created by DJ on 3/9/2015.
@@ -32,9 +35,22 @@ public class MainFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 String search = edtSearch.getText().toString();
-                Intent i = new Intent(getActivity(),ResultActivity.class);
-                i.putExtra("SEARCH",search);
-                startActivity(i);
+                if(search.isEmpty()){
+                    int rnd, max = 3, min = 1;
+                    rnd = new Random().nextInt((max - min + 1) + min);
+                    String toastMsg;
+                    if(rnd==1)
+                        toastMsg="Come on, there's bound to be some book you know of right?";
+                    else if(rnd==2)
+                        toastMsg="You need to give me something, dear.";
+                    else
+                        toastMsg="There isn't a book that hasn't got any title, dear.";
+                    Toast.makeText(getActivity(),toastMsg,Toast.LENGTH_LONG).show();
+                }else {
+                    Intent i = new Intent(getActivity(), ResultActivity.class);
+                    i.putExtra("SEARCH", search);
+                    startActivity(i);
+                }
             }
         });
 

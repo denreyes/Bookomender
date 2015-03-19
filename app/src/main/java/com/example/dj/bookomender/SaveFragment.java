@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,10 +54,14 @@ public class SaveFragment extends Fragment{
 //                txtDescription.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_DESC)));
                 txtAuthor.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_AUTHOR)));
 
-                String x="";
-                for(int y=0;y<((int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING)))));y++)
-                    x = x+"*";
-                txtRating.setText(x);
+                String x="★★★★★";
+                int aveRating = (int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING))));
+
+                final SpannableStringBuilder sb = new SpannableStringBuilder(x);
+                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.teal));
+                sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                txtRating.setText(sb);
                 Picasso.with(context)
                         .load(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_IMG)))
                         .resize(80, 131)

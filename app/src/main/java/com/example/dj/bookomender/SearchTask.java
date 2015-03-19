@@ -288,6 +288,7 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
     @Override
     protected void onPostExecute(Bundle bundle) {
         if(bundle != null){
+
             Toast.makeText(context, bundle.getString("M_TITLE"), Toast.LENGTH_LONG).show();
             final ResultAdapter adapter = new ResultAdapter(bundle,context);
             progressDialog.dismiss();
@@ -304,7 +305,7 @@ public class SearchTask extends AsyncTask<String,Void,Bundle> {
         }
         else {
             progressDialog.dismiss();
-            Toast.makeText(context,"OI",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"No books found, please be more precise.",Toast.LENGTH_LONG).show();
         }
     }
 }
