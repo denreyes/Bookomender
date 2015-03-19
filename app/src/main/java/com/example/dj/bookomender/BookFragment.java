@@ -210,9 +210,13 @@ public class BookFragment extends Fragment {
                 String bookIsbn = jsonBook.getString(M_ISBN_13);
                 String desc = jsonBook.getString(M_DESC);
                 String rate = jsonBook.getString(M_RATE);
-                String img = jsonBook.getString(M_IMG).replace("s/", "l/");
-                img = img.replace("kl/", "ks/");
-                Log.v("OI", img);
+                String img = jsonBook.getString(M_IMG);
+                if(img.equals("https://s.gr-assets.com/assets/nophoto/book/50x75-a91bf249278a81aabab721ef782c4a74.png")) {
+                    img="noimage";
+                }else{
+                    img = img.replace("s/", "l/");
+                    img = img.replace("kl/", "ks/");}
+                Log.v(LOG_TAG,img);
                 String authorName = null;
                 JSONObject jsonAuthors = jsonBook.getJSONObject(M_AUTHORS);
 
@@ -277,12 +281,22 @@ public class BookFragment extends Fragment {
 
                 txtSRating.setText(sb);
 
-                Picasso.with(getActivity())
-                        .load(bundle.getString("M_IMG"))
-                        .resize(500, 810)
-                        .centerCrop()
-                        .into(imgBook);
+                String l_img = bundle.getString("M_IMG");
 
+                if(l_img=="noimage"){
+                    Picasso.with(getActivity())
+                            .load(R.drawable.unknown_y)
+                            .resize(500, 810)
+                            .centerCrop()
+                            .into(imgBook);
+                }
+                else {
+                    Picasso.with(getActivity())
+                            .load(l_img)
+                            .resize(500, 810)
+                            .centerCrop()
+                            .into(imgBook);
+                }
                 ScrollView bookView = (ScrollView)getActivity().findViewById(R.id.bookView);
                 bookView.setVisibility(View.VISIBLE);
             }catch(NullPointerException e){
