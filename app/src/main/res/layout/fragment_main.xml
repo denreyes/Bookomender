@@ -17,18 +17,15 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
+
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtSearch"
             android:hint="Book Title (Be Specific)"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1" />
 
         <Button
@@ -40,11 +37,5 @@
             android:layout_weight="5"
             android:background="#0000"/>
     </LinearLayout>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Saved Books"
-        android:id="@+id/btnToRead" />
 
 </LinearLayout>

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -42,7 +41,7 @@ public class BookFragment extends Fragment {
     String isbn;
     TextView txtTitle,txtAuthor,txtRating,txtDescription,txtSRating;
     ImageView imgBook;
-    Button btnToRead;
+    String post_title,post_desc,post_author,post_rate,post_isbn,post_img;
 
     public BookFragment() {
     }
@@ -59,11 +58,32 @@ public class BookFragment extends Fragment {
         txtSRating = (TextView) rootView.findViewById(R.id.txtSRating);
         txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
         imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
-        btnToRead = (Button) rootView.findViewById(R.id.btnToRead);
 
         BookTask searchTask = new BookTask();
         searchTask.execute(isbn);
         return rootView;
+    }
+
+    public void AddBook(){
+        BookDBHelper bookDBHelper = new BookDBHelper(getActivity());
+        SQLiteDatabase sqLiteDatabase = bookDBHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BookContract.BookEntry.COLUMN_BOOK_TITLE, post_title);
+        contentValues.put(BookContract.BookEntry.COLUMN_DESC, post_desc);
+        contentValues.put(BookContract.BookEntry.COLUMN_AUTHOR, post_author);
+        contentValues.put(BookContract.BookEntry.COLUMN_RATING, post_rate);
+        contentValues.put(BookContract.BookEntry.COLUMN_ISBN, post_isbn);
+        contentValues.put(BookContract.BookEntry.COLUMN_IMG, post_img);
+
+        long locationRowId = sqLiteDatabase.insert(BookContract.BookEntry.TABLE_NAME, null, contentValues);
+
+        if (locationRowId == -1) {
+            Toast.makeText(getActivity(), "Book Already exists.", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(getActivity(),post_title+" Added.",Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -226,7 +246,7 @@ public class BookFragment extends Fragment {
             }
         }
 
-        String post_title,post_desc,post_author,post_rate,post_isbn,post_img;
+
         @Override
         protected void onPostExecute(Bundle bundle) {
             super.onPostExecute(bundle);
@@ -235,7 +255,8 @@ public class BookFragment extends Fragment {
 
                 String text = Jsoup.parse(bundle.getString("M_DESC").replaceAll("(?i)<br[^>]*>", "CH4NG3S")
                         .replaceAll("<p>", "CH4NG3S").replaceAll("</p>", "CH4NG3SCH4NG3S")).text();
-                post_desc = text.replaceAll("CH4NG3S", "\n");
+                post_desc = text.replaceAll("CH4NG3S", "\n").replaceAll("â", "'");
+                Log.v("OY",post_desc);
 
                 post_author = bundle.getString("M_AUTHOR_NAME");
                 post_rate = bundle.getString("M_RATE");
@@ -262,30 +283,6 @@ public class BookFragment extends Fragment {
                         .centerCrop()
                         .into(imgBook);
 
-                btnToRead.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        BookDBHelper bookDBHelper = new BookDBHelper(getActivity());
-                        SQLiteDatabase sqLiteDatabase = bookDBHelper.getWritableDatabase();
-
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(BookContract.BookEntry.COLUMN_BOOK_TITLE, post_title);
-                        contentValues.put(BookContract.BookEntry.COLUMN_DESC, post_desc);
-                        contentValues.put(BookContract.BookEntry.COLUMN_AUTHOR, post_author);
-                        contentValues.put(BookContract.BookEntry.COLUMN_RATING, post_rate);
-                        contentValues.put(BookContract.BookEntry.COLUMN_ISBN, post_isbn);
-                        contentValues.put(BookContract.BookEntry.COLUMN_IMG, post_img);
-
-                        long locationRowId = sqLiteDatabase.insert(BookContract.BookEntry.TABLE_NAME, null, contentValues);
-
-                        if (locationRowId == -1) {
-                            Toast.makeText(getActivity(),"Book Already exists.",Toast.LENGTH_LONG).show();
-                        }
-                        else{
-                            Toast.makeText(getActivity(),post_title+" Added.",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
                 ScrollView bookView = (ScrollView)getActivity().findViewById(R.id.bookView);
                 bookView.setVisibility(View.VISIBLE);
             }catch(NullPointerException e){

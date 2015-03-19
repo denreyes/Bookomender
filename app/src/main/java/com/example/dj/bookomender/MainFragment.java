@@ -29,7 +29,6 @@ public class MainFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         edtSearch = (EditText)rootView.findViewById(R.id.edtSearch);
         btnSearch = (Button)rootView.findViewById(R.id.btnSearch);
-        btnToRead = (Button)rootView.findViewById(R.id.btnToRead);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +50,6 @@ public class MainFragment extends Fragment{
                     i.putExtra("SEARCH", search);
                     startActivity(i);
                 }
-            }
-        });
-
-        btnToRead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(),SaveActivity.class);
-                startActivity(i);
             }
         });
 
