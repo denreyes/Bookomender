@@ -1,5 +1,6 @@
 package com.example.dj.bookomender;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -33,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
 /**
  * Created by DJ on 3/16/2015.
@@ -41,7 +43,8 @@ public class BookFragment extends Fragment {
     String isbn;
     TextView txtTitle,txtAuthor,txtRating,txtDescription,txtSRating;
     ImageView imgBook;
-    String post_title,post_desc,post_author,post_rate,post_isbn,post_img;
+    String post_title,post_desc,post_author,post_rate,post_id,post_img;
+    ProgressDialog progressDialog;
 
     public BookFragment() {
     }
@@ -73,7 +76,7 @@ public class BookFragment extends Fragment {
         contentValues.put(BookContract.BookEntry.COLUMN_DESC, post_desc);
         contentValues.put(BookContract.BookEntry.COLUMN_AUTHOR, post_author);
         contentValues.put(BookContract.BookEntry.COLUMN_RATING, post_rate);
-        contentValues.put(BookContract.BookEntry.COLUMN_ISBN, post_isbn);
+        contentValues.put(BookContract.BookEntry.COLUMN_ID, post_id);
         contentValues.put(BookContract.BookEntry.COLUMN_IMG, post_img);
 
         long locationRowId = sqLiteDatabase.insert(BookContract.BookEntry.TABLE_NAME, null, contentValues);
@@ -102,6 +105,15 @@ public class BookFragment extends Fragment {
         Bundle bundle = null;
 
         public BookTask(){}
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String[] loadPhrases = getResources().getStringArray(R.array.load_phrases);
+            int rnd, max = loadPhrases.length, min = 1;
+            rnd = new Random().nextInt((max - min + 1) + min);
+            progressDialog = ProgressDialog.show(getActivity(),null,loadPhrases[rnd]);
+        }
 
         @Override
         protected Bundle doInBackground(String... params) {
@@ -194,7 +206,7 @@ public class BookFragment extends Fragment {
                 final String BOOK = "book";
 
                 final String M_TITLE = "title";
-                final String M_ISBN_13 = "isbn13";
+                final String M_ID = "id";
                 final String M_DESC = "description";
                 final String M_IMG = "small_image_url";
                 final String M_RATE = "average_rating";
@@ -207,7 +219,7 @@ public class BookFragment extends Fragment {
                 JSONObject jsonBook = jsonGoodReadsResponse.getJSONObject(BOOK);
 
                 String bookTitle = jsonBook.getString(M_TITLE);
-                String bookIsbn = jsonBook.getString(M_ISBN_13);
+                String bookId = jsonBook.getString(M_ID);
                 String desc = jsonBook.getString(M_DESC);
                 String rate = jsonBook.getString(M_RATE);
                 String img = jsonBook.getString(M_IMG);
@@ -238,7 +250,7 @@ public class BookFragment extends Fragment {
                 Bundle bundle = new Bundle();
 
                 bundle.putString("M_TITLE", bookTitle);
-                bundle.putString("M_ISBN_13", bookIsbn);
+                bundle.putString("M_ID", bookId);
                 bundle.putString("M_AUTHOR_NAME", authorName);
                 bundle.putString("M_DESC", desc);
                 bundle.putString("M_RATE", rate);
@@ -255,6 +267,7 @@ public class BookFragment extends Fragment {
         protected void onPostExecute(Bundle bundle) {
             super.onPostExecute(bundle);
             try {
+                progressDialog.dismiss();
                 post_title = bundle.getString("M_TITLE");
 
                 String text = Jsoup.parse(bundle.getString("M_DESC").replaceAll("(?i)<br[^>]*>", "CH4NG3S")
@@ -264,7 +277,7 @@ public class BookFragment extends Fragment {
 
                 post_author = bundle.getString("M_AUTHOR_NAME");
                 post_rate = bundle.getString("M_RATE");
-                post_isbn = bundle.getString("M_ISBN_13");
+                post_id = bundle.getString("M_ID");
                 post_img = bundle.getString("M_IMG");
 
                 txtTitle.setText(post_title);

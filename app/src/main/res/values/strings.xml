@@ -7,5 +7,33 @@
     <string name="title_activity_detail">DetailActivity</string>
 
     <string name="goodreads_api_key">UpH4L0IYjAXcezlfg0yT2Q</string>
+    
+    <string-array name="load_phrases">
+        <item>the architects are still drafting</item>
+        <item>the bits are breeding</item>
+        <item>we are building the buildings as fast as we can</item>
+        <item>would you prefer chicken, steak, or tofu?</item>
+        <item>pay no attention to the man behind the curtain</item>
+        <item>and enjoy the elevator music</item>
+        <item>while the little elves draw your map</item>
+        <item>a few bits tried to escape, but we caught them</item>
+        <item>and dream of faster computers</item>
+        <item>would you like fries with that?</item>
+        <item>checking the gravitational constant in your locale</item>
+        <item>go ahead - hold your breath</item>
+        <item>at least you are not on hold</item>
+        <item>hum something loud while others stare</item>
+        <item>you are not in Kansas any more</item>
+        <item>the server is powered by a lemon and two electrodes</item>
+        <item>we love you just the way you are</item>
+        <item>while a larger software vendor in Seattle takes over the world</item>
+        <item>don not think of purple hippos</item>
+        <item>follow the white rabbit</item>
+        <item>why dont you order a sandwich?</item>
+        <item>while the satellite moves into position</item>
+        <item>the bits are flowing slowly today</item>
+        <item>dig on the X for buried treasure.. ARRR!</item>
+        <item>it is still faster than you could draw it</item>
+    </string-array>
 
 </resources>

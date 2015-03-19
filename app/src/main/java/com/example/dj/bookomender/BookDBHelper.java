@@ -22,7 +22,7 @@ public class BookDBHelper extends SQLiteOpenHelper {
                 BookContract.BookEntry.COLUMN_AUTHOR + " TEXT NOT NULL,"+
                 BookContract.BookEntry.COLUMN_DESC + " TEXT NOT NULL,"+
                 BookContract.BookEntry.COLUMN_RATING + " TEXT NOT NULL,"+
-                BookContract.BookEntry.COLUMN_ISBN + " TEXT NOT NULL UNIQUE,"+
+                BookContract.BookEntry.COLUMN_ID + " TEXT NOT NULL UNIQUE,"+
                 BookContract.BookEntry.COLUMN_IMG + " TEXT NOT NULL );";
 
         db.execSQL(SQL_CREATE_BOOKS_TABLE);

@@ -83,7 +83,8 @@ public class ResultAdapter extends BaseAdapter {
 
         txtTitle.setText(s_title[position]);
         txtAuthor.setText(s_author[position]);
-        if(s_image[position].equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")) {
+        if(s_image[position].equals("https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png")
+                || s_image[position].equals("noimage")) {
             Picasso.with(context)
                     .load(R.drawable.unknown_g)
                     .resize(80, 130)

@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:layout_marginTop="-100dp">
+    android:layout_marginTop="-100dp"
+    android:background="@drawable/bg_library">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -22,20 +23,23 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:id="@+id/edtSearch"
             android:hint="Book Title (Be Specific)"
             android:layout_marginLeft="10dp"
+            android:shadowColor="#000000"
+            android:background="#f0f0f0"
             android:layout_weight="1" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawableLeft="@drawable/search"
-            android:paddingLeft="14dp"
-            android:id="@+id/btnSearch"
-            android:layout_weight="5"
-            android:background="#0000"/>
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/search"
+        android:paddingLeft="25dp"
+        android:id="@+id/btnSearch"
+        android:background="#0000"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

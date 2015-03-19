@@ -31,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -96,7 +97,10 @@ public class ResultFragment extends Fragment{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(context,null,"Looking for "+search);
+            String[] loadPhrases = getResources().getStringArray(R.array.load_phrases);
+            int rnd, max = loadPhrases.length, min = 1;
+            rnd = new Random().nextInt((max - min + 1) + min);
+            progressDialog = ProgressDialog.show(context,null,loadPhrases[rnd]);
         }
 
         @Override
@@ -313,7 +317,6 @@ public class ResultFragment extends Fragment{
                 bundle.putStringArray("M_SIMILAR_IMAGE_URL", simImage);
                 bundle.putStringArray("M_SIMILAR_AUTHOR_NAME", simAuthor);
                 bundle.putInt("M_SIMILAR_SIZE", simTitle.length);
-                Log.v(LOG_TAG, "TRY " + simTitle[0] + " " + simIsbn[0] + " " + simAuthor[0] + " " + simImage[0] + " " + simRating[0]);
 
                 return bundle;
             }catch (NullPointerException e){

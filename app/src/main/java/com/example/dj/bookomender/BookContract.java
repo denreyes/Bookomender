@@ -31,7 +31,7 @@ public class BookContract {
         public static final String COLUMN_DESC = "description";
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_AUTHOR = "author";
-        public static final String COLUMN_ISBN = "isbn";
+        public static final String COLUMN_ID = "id";
         public static final String COLUMN_IMG = "img";
 
         public static Uri buildBooksUri(long id) {
