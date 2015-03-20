@@ -36,8 +36,19 @@ public class SaveFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_result, container, false);
 
         listResult = (ListView)rootView.findViewById(R.id.listview_search_result);
+        queryList();
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        queryList();
+    }
+
+    public void queryList(){
         final Cursor cursor = new BookDBHelper(getActivity()).getReadableDatabase().
-                query(BookContract.BookEntry.TABLE_NAME, null, null, null, null, null, null);
+                query(BookContract.BookEntry.TABLE_NAME, null, null, null, null, null, BookContract.BookEntry._ID + " DESC");
         listResult.setAdapter(new CursorAdapter(getActivity(),cursor,false) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -82,13 +93,12 @@ public class SaveFragment extends Fragment{
         listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String isbn = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_ID));
-                Intent i = new Intent(getActivity(),BookActivity.class);
-                i.putExtra("ISBN",isbn);
+                String s_id = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry._ID));
+                Intent i = new Intent(getActivity(),SaveDetailActivity.class);
+                i.putExtra("ID",s_id);
                 getActivity().startActivity(i);
             }
         });
-        return rootView;
     }
 
     @Override

@@ -98,7 +98,7 @@ public class ResultFragment extends Fragment{
         protected void onPreExecute() {
             super.onPreExecute();
             String[] loadPhrases = getResources().getStringArray(R.array.load_phrases);
-            int rnd, max = loadPhrases.length, min = 1;
+            int rnd, max = loadPhrases.length-2, min = 0;
             rnd = new Random().nextInt((max - min + 1) + min);
             progressDialog = ProgressDialog.show(context,null,loadPhrases[rnd]);
         }

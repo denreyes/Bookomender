@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.dj.bookomender">
+    package="com.example.dj.bookomender" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -25,7 +25,11 @@
             android:label="Saved Books"
             android:theme="@style/ActionBar.Solid.Sunshine.NoTitle" >
         </activity>
-        <activity android:name=".BookActivity"/>
+        <activity android:name=".BookActivity" />
+        <activity
+            android:name=".SaveDetailActivity"
+            android:label="@string/title_activity_save_detail" >
+        </activity>
     </application>
 
 </manifest>
