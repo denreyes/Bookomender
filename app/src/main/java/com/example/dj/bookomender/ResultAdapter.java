@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
  */
 public class ResultAdapter extends BaseAdapter {
     String title, isbn, author;
-    String[] s_title, s_isbn, s_rating, s_image, s_author;
+        String[] s_title, s_isbn, s_rating, s_image, s_author;
     LayoutInflater inflater;
     Context context;
 

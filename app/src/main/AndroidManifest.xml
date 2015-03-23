@@ -26,10 +26,7 @@
             android:theme="@style/ActionBar.Solid.Sunshine.NoTitle" >
         </activity>
         <activity android:name=".BookActivity" />
-        <activity
-            android:name=".SaveDetailActivity"
-            android:label="@string/title_activity_save_detail" >
-        </activity>
+        <activity android:name=".SaveDetailActivity" />
     </application>
 
 </manifest>

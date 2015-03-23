@@ -26,8 +26,7 @@
             android:layout_height="30dp"
             android:id="@+id/edtSearch"
             android:hint="Book Title (Be Specific)"
-            android:layout_marginLeft="10dp"
-            android:shadowColor="#000000"
+            android:textSize="15sp"
             android:background="#f0f0f0"
             android:layout_weight="1" />
 

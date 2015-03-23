@@ -330,10 +330,10 @@ public class ResultFragment extends Fragment{
             if(bundle != null){
                 ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
                 actionBar.setTitle(bundle.getString("M_TITLE"));
-                Toast.makeText(context, bundle.getString("M_TITLE"), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, bundle.getString("M_ISBN_13"), Toast.LENGTH_LONG).show();
                 final ResultAdapter adapter = new ResultAdapter(bundle,context);
                 progressDialog.dismiss();
-                listResult.setAdapter(adapter);
+                listResult.setAdapter(adapter   );
                 listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
