@@ -26,7 +26,7 @@ public class SaveDetailActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_alpha);
         String id = getIntent().getStringExtra("ID");
         Bundle bundle = new Bundle();
         bundle.putString("ID",id);
@@ -109,7 +109,7 @@ public class SaveDetailActivity extends ActionBarActivity {
                 String x="★★★★★";
                 int aveRating = (int) Math.round(Double.parseDouble(rate));
                 final SpannableStringBuilder sb = new SpannableStringBuilder(x);
-                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.dark_teal));
+                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.dark_main));
                 sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                 txtSRating.setText(sb);

@@ -289,7 +289,7 @@ public class BookFragment extends Fragment {
                 int aveRating = (int) Math.round(Double.parseDouble(post_rate));
 
                 final SpannableStringBuilder sb = new SpannableStringBuilder(x);
-                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.dark_teal));
+                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.dark_main));
                 sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                 txtSRating.setText(sb);

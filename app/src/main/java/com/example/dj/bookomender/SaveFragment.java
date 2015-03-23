@@ -33,7 +33,7 @@ public class SaveFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_result, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         listResult = (ListView)rootView.findViewById(R.id.listview_search_result);
         queryList();
@@ -69,7 +69,7 @@ public class SaveFragment extends Fragment{
                 int aveRating = (int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING))));
 
                 final SpannableStringBuilder sb = new SpannableStringBuilder(x);
-                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.teal));
+                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.main));
                 sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                 txtRating.setText(sb);

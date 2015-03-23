@@ -16,7 +16,7 @@ public class BookActivity extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setElevation(0);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_alpha);
 
         if (savedInstanceState == null) {
             bookFragment = new BookFragment();

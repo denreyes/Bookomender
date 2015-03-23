@@ -76,7 +76,7 @@ public class ResultAdapter extends BaseAdapter {
         int aveRating = (int) Math.round(Double.parseDouble(s_rating[position]));
 
         final SpannableStringBuilder sb = new SpannableStringBuilder(x);
-        final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources().getColor(R.color.teal));
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources().getColor(R.color.main));
         sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         txtRating.setText(sb);

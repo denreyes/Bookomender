@@ -52,7 +52,7 @@ public class ResultFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.inflater = inflater;
-        View rootView = inflater.inflate(R.layout.fragment_result, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         search = getArguments().getString("SEARCH");
 
         listResult = (ListView)rootView.findViewById(R.id.listview_search_result);
