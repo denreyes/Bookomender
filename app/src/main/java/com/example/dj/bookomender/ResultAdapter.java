@@ -79,7 +79,9 @@ public class ResultAdapter extends BaseAdapter {
         final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources().getColor(R.color.main));
         sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        txtRating.setText(sb);
+        try {
+            txtRating.setText(sb);
+        }catch (NullPointerException e){}
 
         txtTitle.setText(s_title[position]);
         txtAuthor.setText(s_author[position]);

@@ -15,7 +15,7 @@ public class ResultActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alpha);
+        setContentView(R.layout.activity_bravo);
 
         if (savedInstanceState == null) {
             resultFragment = new ResultFragment();

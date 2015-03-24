@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -310,11 +311,18 @@ public class BookFragment extends Fragment {
                             .centerCrop()
                             .into(imgBook);
                 }
-                ScrollView bookView = (ScrollView)getActivity().findViewById(R.id.bookView);
-                bookView.setVisibility(View.VISIBLE);
-            }catch(NullPointerException e){
-
-            }
+//                LinearLayout bookView = (LinearLayout) getActivity().findViewById(R.id.bookView);
+//                bookView.setVisibility(View.VISIBLE);
+                Log.v("OIII",getActivity().getLocalClassName());
+                if(getActivity().getLocalClassName().equals("BookActivity")){
+                    ScrollView bookView = (ScrollView) getActivity().findViewById(R.id.bookView);
+                    bookView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    LinearLayout bookView = (LinearLayout) getActivity().findViewById(R.id.bookView);
+                    bookView.setVisibility(View.VISIBLE);
+                }
+            }catch(NullPointerException e){}
         }
     }
 }

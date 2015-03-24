@@ -330,7 +330,17 @@ public class ResultFragment extends Fragment{
             if(bundle != null){
                 ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
                 actionBar.setTitle(bundle.getString("M_TITLE"));
-                Toast.makeText(context, bundle.getString("M_ISBN_13"), Toast.LENGTH_LONG).show();
+
+                if(getActivity().findViewById(R.id.container_x)!=null){
+                    BookFragment bookFragment = new BookFragment();
+                    Bundle b_bundle = new Bundle();
+                    b_bundle.putString("ISBN", bundle.getString("M_ISBN_13"));
+                    bookFragment.setArguments(b_bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.container_x, bookFragment)
+                            .commit();
+                }
+
                 final ResultAdapter adapter = new ResultAdapter(bundle,context);
                 progressDialog.dismiss();
                 listResult.setAdapter(adapter   );
@@ -338,9 +348,19 @@ public class ResultFragment extends Fragment{
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         String isbn = adapter.getItem(position).toString();
-                        Intent i = new Intent(context,BookActivity.class);
-                        i.putExtra("ISBN",isbn);
-                        context.startActivity(i);
+                        if(getActivity().findViewById(R.id.container_x)!=null){
+                            BookFragment bookFragment = new BookFragment();
+                            Bundle b_bundle = new Bundle();
+                            b_bundle.putString("ISBN", isbn);
+                            bookFragment.setArguments(b_bundle);
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.container_x, bookFragment)
+                                    .commit();
+                        }else {
+                            Intent i = new Intent(context, BookActivity.class);
+                            i.putExtra("ISBN", isbn);
+                            context.startActivity(i);
+                        }
                     }
                 });
             }
