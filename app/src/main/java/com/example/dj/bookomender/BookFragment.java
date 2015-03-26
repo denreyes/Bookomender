@@ -111,8 +111,7 @@ public class BookFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             String[] loadPhrases = getResources().getStringArray(R.array.load_phrases);
-            int rnd, max = loadPhrases.length, min = 1;
-            rnd = new Random().nextInt((max - min + 1) + min);
+            int rnd = new Random().nextInt(loadPhrases.length-1);
             progressDialog = ProgressDialog.show(getActivity(),null,loadPhrases[rnd]);
         }
 

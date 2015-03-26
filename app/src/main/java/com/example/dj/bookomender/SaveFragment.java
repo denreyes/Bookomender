@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
  * Created by DJ on 3/16/2015.
  */
 public class SaveFragment extends Fragment{
-
+    SaveDetailFragment saveDetailFragment;
     ListView listResult;
 
     public SaveFragment() {
@@ -64,15 +64,14 @@ public class SaveFragment extends Fragment{
 
                 txtTitle.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_TITLE)));
                 txtAuthor.setText(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_AUTHOR)));
-
-                String x="★★★★★";
-                int aveRating = (int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING))));
-
-                final SpannableStringBuilder sb = new SpannableStringBuilder(x);
-                final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.main));
-                sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-                txtRating.setText(sb);
+                if(getActivity().findViewById(R.id.container_x)==null) {
+                    String x = "★★★★★";
+                    int aveRating = (int) Math.round(Double.parseDouble(cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING))));
+                    final SpannableStringBuilder sb = new SpannableStringBuilder(x);
+                    final ForegroundColorSpan fcs = new ForegroundColorSpan(getResources().getColor(R.color.main));
+                    sb.setSpan(fcs, 0, aveRating, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    txtRating.setText(sb);
+                }
                 String img = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_IMG));
                 if(img.equals("noimage")){
                     Picasso.with(getActivity())
@@ -94,9 +93,20 @@ public class SaveFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String s_id = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry._ID));
-                Intent i = new Intent(getActivity(),SaveDetailActivity.class);
-                i.putExtra("ID",s_id);
-                getActivity().startActivity(i);
+                if(getActivity().findViewById(R.id.container_x)!=null){
+                    saveDetailFragment = new SaveDetailFragment();
+                    Bundle b_bundle = new Bundle();
+                    b_bundle.putString("ID", s_id);
+                    saveDetailFragment.setArguments(b_bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container_x, saveDetailFragment)
+                            .commit();
+                }
+                else {
+                    Intent i = new Intent(getActivity(), SaveDetailActivity.class);
+                    i.putExtra("ID", s_id);
+                    getActivity().startActivity(i);
+                }
             }
         });
     }
@@ -104,5 +114,9 @@ public class SaveFragment extends Fragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    public void delete(){
+        saveDetailFragment.delete();
     }
 }

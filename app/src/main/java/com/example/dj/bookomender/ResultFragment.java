@@ -68,9 +68,19 @@ public class ResultFragment extends Fragment{
     }
 
     public void onItemClick(){
-        Intent i = new Intent(getActivity(),BookActivity.class);
-        i.putExtra("ISBN",searchIsbn);
-        getActivity().startActivity(i);
+        if(getActivity().findViewById(R.id.container_x)!=null){
+            BookFragment bookFragment = new BookFragment();
+            Bundle b_bundle = new Bundle();
+            b_bundle.putString("ISBN", searchIsbn);
+            bookFragment.setArguments(b_bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_x, bookFragment)
+                    .commit();
+        }else {
+            Intent i = new Intent(getActivity(),BookActivity.class);
+            i.putExtra("ISBN",searchIsbn);
+            getActivity().startActivity(i);
+        }
     }
 
     public class SearchTask extends AsyncTask<String,Void,Bundle> {
@@ -98,8 +108,7 @@ public class ResultFragment extends Fragment{
         protected void onPreExecute() {
             super.onPreExecute();
             String[] loadPhrases = getResources().getStringArray(R.array.load_phrases);
-            int rnd, max = loadPhrases.length-2, min = 0;
-            rnd = new Random().nextInt((max - min + 1) + min);
+            int rnd = new Random().nextInt(loadPhrases.length-1);
             progressDialog = ProgressDialog.show(context,null,loadPhrases[rnd]);
         }
 
