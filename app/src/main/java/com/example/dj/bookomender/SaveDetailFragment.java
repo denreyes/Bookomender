@@ -58,6 +58,7 @@ public class SaveDetailFragment extends Fragment {
     }
 
     public void queryList(){
+
         cursor = new BookDBHelper(getActivity()).getReadableDatabase().
                 query(BookContract.BookEntry.TABLE_NAME, null, "_id = " + getArguments().getString("ID") , null, null, null, null);
         if(cursor.moveToFirst()){

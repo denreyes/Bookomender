@@ -1,5 +1,6 @@
 package com.example.dj.bookomender;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -9,21 +10,22 @@ import android.provider.BaseColumns;
  */
 public class BookContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.dj.bookomender.app";
+    public static final String CONTENT_AUTHORITY = "com.example.dj.bookomender.BookProvider";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_BOOKS = "books";
 
+    //BookEntry
     public static final class BookEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).build();
 
         public static final String CONTENT_TYPE =
-                "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
         public static final String CONTENT_ITEM_TYPE =
-                "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
 
         public static final String TABLE_NAME = "books";
 
@@ -36,6 +38,10 @@ public class BookContract {
 
         public static Uri buildBooksUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getIsbnFromUri(Uri uri) {
+            return uri.getPathSegments().get(5);
         }
     }
 }

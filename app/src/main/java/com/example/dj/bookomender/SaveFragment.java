@@ -17,6 +17,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -92,6 +93,17 @@ public class SaveFragment extends Fragment{
         listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //PROVIDER TEST
+                Cursor x_cursor = getActivity().getContentResolver().query(
+                        BookContract.BookEntry.CONTENT_URI,
+                        null,
+                        getString(cursor.getColumnIndex(BookContract.BookEntry._ID)),
+                        null,
+                        null);
+                if(x_cursor.moveToFirst()){
+                    Toast.makeText(getActivity(), "" + x_cursor.getString(x_cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_TITLE)), Toast.LENGTH_LONG).show();
+                }
+//
                 String s_id = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry._ID));
                 if(getActivity().findViewById(R.id.container_x)!=null){
                     saveDetailFragment = new SaveDetailFragment();
