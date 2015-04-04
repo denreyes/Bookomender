@@ -1,7 +1,6 @@
 package com.example.dj.bookomender;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -35,13 +34,5 @@ public class BookContract {
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_IMG = "img";
-
-        public static Uri buildBooksUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-
-        public static String getIsbnFromUri(Uri uri) {
-            return uri.getPathSegments().get(5);
-        }
     }
 }
