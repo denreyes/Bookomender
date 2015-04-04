@@ -2,8 +2,8 @@
 <resources>
 
     <item name="light_main" type="color">#FFEBEE</item>
-    <item name="main" type="color">#EF5350</item>
-    <item name="dark_main" type="color">#D32F2F</item>
-    <item name="darkest_main" type="color">#B71C1C</item>
+    <item name="main" type="color">#009688</item>
+    <item name="dark_main" type="color">#00796B</item>
+    <item name="darkest_main" type="color">#004D40</item>
     <item name="light_grey" type="color">#BDBDBD</item>
 </resources>

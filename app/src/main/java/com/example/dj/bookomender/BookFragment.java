@@ -46,6 +46,7 @@ public class BookFragment extends Fragment {
     ImageView imgBook;
     String post_title,post_desc,post_author,post_rate,post_id,post_img;
     ProgressDialog progressDialog;
+    ViewGroup bookView;
 
     public BookFragment() {
     }
@@ -266,7 +267,6 @@ public class BookFragment extends Fragment {
         @Override
         protected void onPostExecute(Bundle bundle) {
             super.onPostExecute(bundle);
-            try {
                 progressDialog.dismiss();
                 post_title = bundle.getString("M_TITLE");
 
@@ -310,18 +310,18 @@ public class BookFragment extends Fragment {
                             .centerCrop()
                             .into(imgBook);
                 }
-//                LinearLayout bookView = (LinearLayout) getActivity().findViewById(R.id.bookView);
-//                bookView.setVisibility(View.VISIBLE);
-                Log.v("OIII",getActivity().getLocalClassName());
-                if(getActivity().getLocalClassName().equals("BookActivity")){
-                    ScrollView bookView = (ScrollView) getActivity().findViewById(R.id.bookView);
-                    bookView.setVisibility(View.VISIBLE);
+
+                if (getActivity().findViewById(R.id.container_x) != null) {
+                    bookView = (LinearLayout) getActivity().findViewById(R.id.linearBookView);
+                } else {
+                    bookView = (ScrollView) getActivity().findViewById(R.id.scrollBookView);
                 }
-                else{
-                    LinearLayout bookView = (LinearLayout) getActivity().findViewById(R.id.bookView);
-                    bookView.setVisibility(View.VISIBLE);
-                }
-            }catch(NullPointerException e){}
+            try {
+                bookView.setVisibility(View.VISIBLE);
+            }catch (NullPointerException e){
+                if(getActivity().getLocalClassName().equals("BookActivity"))
+                    getActivity().finish();
+            }
         }
     }
 }

@@ -51,4 +51,14 @@ public class SaveActivity extends ActionBarActivity{
         }
         return super.onCreateOptionsMenu(menu);
     }
+
+    public void orienChange(String id){
+        SaveDetailFragment saveDetailFragment = new SaveDetailFragment();
+        Bundle b_bundle = new Bundle();
+        b_bundle.putString("ID", id);
+        saveDetailFragment.setArguments(b_bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_x, saveDetailFragment)
+                .commit();
+    }
 }

@@ -13,17 +13,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 /**
  * Created by DJ on 3/25/2015.
  */
-public class SaveDetailFragment extends Fragment {
+public class SaveDetailFragment extends Fragment{
     TextView txtTitle,txtAuthor,txtRating,txtDescription,txtSRating;
     ImageView imgBook;
-    ScrollView scrollView;
-    LinearLayout linearView;
+    ViewGroup layoutView;
     Cursor cursor;
 
     public SaveDetailFragment() {
@@ -33,6 +33,7 @@ public class SaveDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book, container, false);
+        Toast.makeText(getActivity(), getActivity().getLocalClassName(),Toast.LENGTH_LONG).show();
 
         txtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
         txtAuthor = (TextView) rootView.findViewById(R.id.txtAuthor);
@@ -41,11 +42,10 @@ public class SaveDetailFragment extends Fragment {
         txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
         imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
 
-        if(getActivity().findViewById(R.id.container_x)!=null)
-            linearView = (LinearLayout)rootView.findViewById(R.id.bookView);
-        else
-            scrollView = (ScrollView)rootView.findViewById(R.id.bookView);
-
+            if (getActivity().findViewById(R.id.container_x) != null)
+                layoutView = (LinearLayout) rootView.findViewById(R.id.linearBookView);
+            else
+                layoutView = (ScrollView) rootView.findViewById(R.id.scrollBookView);
         queryList();
         return rootView;
     }
@@ -54,7 +54,7 @@ public class SaveDetailFragment extends Fragment {
         new BookDBHelper(getActivity()).getReadableDatabase().delete(BookContract.BookEntry.TABLE_NAME,
                 "_id = " + getArguments().getString("ID"), null);
         if(getActivity().findViewById(R.id.container_x)!=null)
-            linearView.setVisibility(View.INVISIBLE);
+            layoutView.setVisibility(View.INVISIBLE);
     }
 
     public void queryList(){
@@ -62,10 +62,11 @@ public class SaveDetailFragment extends Fragment {
         cursor = new BookDBHelper(getActivity()).getReadableDatabase().
                 query(BookContract.BookEntry.TABLE_NAME, null, "_id = " + getArguments().getString("ID") , null, null, null, null);
         if(cursor.moveToFirst()){
-            if(getActivity().findViewById(R.id.container_x)!=null)
-                linearView.setVisibility(View.VISIBLE);
-            else
-                scrollView.setVisibility(View.VISIBLE);
+            try{
+                layoutView.setVisibility(View.VISIBLE);}
+            catch (NullPointerException e){
+                getActivity().finish();
+            }
 
             String rate = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry.COLUMN_RATING));
             String x="★★★★★";
