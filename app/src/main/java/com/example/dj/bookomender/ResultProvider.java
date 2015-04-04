@@ -1,9 +1,11 @@
 package com.example.dj.bookomender;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -78,7 +80,16 @@ public class ResultProvider extends ContentProvider{
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        long rowID = db.insert(ResultContract.ResultEntry.TABLE_NAME, "", values);
+
+        if(rowID > 0){
+            Uri u = ContentUris.withAppendedId(uri, rowID);
+            getContext().getContentResolver().notifyChange(u, null);
+            db.close();
+            return u;
+        }
+        throw new SQLException("Failed to insert");
     }
 
     @Override
@@ -103,6 +114,7 @@ public class ResultProvider extends ContentProvider{
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
+        db.close();
         return rowDeleted;
     }
 

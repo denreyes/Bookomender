@@ -20,11 +20,9 @@ public class ResultDBHelper extends SQLiteOpenHelper{
                 ResultContract.ResultEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 ResultContract.ResultEntry.COLUMN_BOOK_TITLE + " TEXT NOT NULL,"+
                 ResultContract.ResultEntry.COLUMN_AUTHOR + " TEXT NOT NULL,"+
-                ResultContract.ResultEntry.COLUMN_DESC + " TEXT NOT NULL,"+
                 ResultContract.ResultEntry.COLUMN_RATING + " TEXT NOT NULL,"+
                 ResultContract.ResultEntry.COLUMN_ID + " TEXT NOT NULL UNIQUE,"+
-                ResultContract.ResultEntry.COLUMN_L_IMG + " TEXT NOT NULL,"+
-                ResultContract.ResultEntry.COLUMN_S_IMG + " TEXT NOT NULL );";
+                ResultContract.ResultEntry.COLUMN_IMG + " TEXT NOT NULL );";
 
         db.execSQL(SQL_CREATE_RESULT_TABLE);
     }

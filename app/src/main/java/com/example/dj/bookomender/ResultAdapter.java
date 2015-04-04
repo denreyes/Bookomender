@@ -19,8 +19,7 @@ import com.squareup.picasso.Picasso;
  * Created by DJ on 3/15/2015.
  */
 public class ResultAdapter extends BaseAdapter {
-    String title, isbn, author;
-        String[] s_title, s_isbn, s_rating, s_image, s_author;
+    String[] s_title, s_isbn, s_rating, s_image, s_author;
     LayoutInflater inflater;
     Context context;
 
@@ -28,9 +27,6 @@ public class ResultAdapter extends BaseAdapter {
         inflater  = LayoutInflater.from(context);
         try {
             this.context = context;
-            title = bundle.getString("M_TITLE");
-            isbn = bundle.getString("M_ISBN_13");
-            author = bundle.getString("M_AUTHOR_NAME");
 
             int size = bundle.getInt("M_SIMILAR_SIZE");
             s_title = new String[size];

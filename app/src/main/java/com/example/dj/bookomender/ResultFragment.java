@@ -2,8 +2,10 @@ package com.example.dj.bookomender;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +58,7 @@ public class ResultFragment extends Fragment{
         search = getArguments().getString("SEARCH");
 
         listResult = (ListView)rootView.findViewById(R.id.listview_search_result);
+        getActivity().getContentResolver().delete(ResultContract.ResultEntry.CONTENT_URI,null,null);
         SearchTask searchTask = new SearchTask(getActivity(),listResult);
         searchTask.execute(search);
 
@@ -83,7 +86,7 @@ public class ResultFragment extends Fragment{
         }
     }
 
-    public class SearchTask extends AsyncTask<String,Void,Bundle> {
+    public class SearchTask extends AsyncTask<String,Void,Void> {
         private final String LOG_TAG = getClass().getSimpleName();
         StringBuffer buffer;
         HttpURLConnection urlConnection;
@@ -113,7 +116,7 @@ public class ResultFragment extends Fragment{
         }
 
         @Override
-        protected Bundle doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
             Bundle bundle = null;
             urlConnection = null;
             reader = null;
@@ -150,12 +153,12 @@ public class ResultFragment extends Fragment{
 
                 try {
                     searchIsbn = getISBN(buffer.toString());
-                    bundle = similarReads(connectGoodreads(getISBN(buffer.toString())));
+                    similarReads(connectGoodreads(getISBN(buffer.toString())));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            return bundle;
+            return null;
         }
 
         private String getJsonString(URL url) throws IOException {
@@ -240,7 +243,7 @@ public class ResultFragment extends Fragment{
             return null;
         }
 
-        private Bundle similarReads(String resultJsonStr)
+        private void similarReads(String resultJsonStr)
                 throws JSONException {
             final String GOOD_READS_RESPONSE = "GoodreadsResponse";
             final String BOOK = "book";
@@ -315,40 +318,63 @@ public class ResultFragment extends Fragment{
                     }
                     simImage[y] = arraySimBooks.getJSONObject(y).getString(M_SIMILAR_IMAGE_URL);
                 }
-                Bundle bundle = new Bundle();
 
-                bundle.putString("M_TITLE", bookTitle);
-                bundle.putString("M_ISBN_13", bookIsbn);
-                bundle.putString("M_AUTHOR_NAME", authorName);
-                bundle.putStringArray("M_SIMILAR_TITLE", simTitle);
-                bundle.putStringArray("M_SIMILAR_ISBN_13", simIsbn);
-                bundle.putStringArray("M_SIMILAR_RATING", simRating);
-                bundle.putStringArray("M_SIMILAR_IMAGE_URL", simImage);
-                bundle.putStringArray("M_SIMILAR_AUTHOR_NAME", simAuthor);
-                bundle.putInt("M_SIMILAR_SIZE", simTitle.length);
-
-                return bundle;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(ResultContract.ResultEntry.COLUMN_BOOK_TITLE, bookTitle);
+                contentValues.put(ResultContract.ResultEntry.COLUMN_ID, bookIsbn);
+                contentValues.put(ResultContract.ResultEntry.COLUMN_AUTHOR, authorName);
+                contentValues.put(ResultContract.ResultEntry.COLUMN_RATING,0);
+                contentValues.put(ResultContract.ResultEntry.COLUMN_IMG,"");
+                getActivity().getContentResolver().insert(ResultContract.ResultEntry.CONTENT_URI, contentValues);
+                for(int z=0;z<simTitle.length;z++) {
+                    contentValues.put(ResultContract.ResultEntry.COLUMN_BOOK_TITLE, simTitle[z]);
+                    contentValues.put(ResultContract.ResultEntry.COLUMN_ID, simIsbn[z]);
+                    contentValues.put(ResultContract.ResultEntry.COLUMN_AUTHOR, simAuthor[z]);
+                    contentValues.put(ResultContract.ResultEntry.COLUMN_RATING,simRating[z]);
+                    contentValues.put(ResultContract.ResultEntry.COLUMN_IMG,simImage[z]);
+                    getActivity().getContentResolver().insert(ResultContract.ResultEntry.CONTENT_URI, contentValues);
+                }
             }catch (NullPointerException e){
                 Log.e(LOG_TAG ,"EMPTY ISBN",e);
             }
-            return null;
         }
 
         @Override
-        protected void onPostExecute(Bundle bundle) {
-            if(bundle != null){
+        protected void onPostExecute(Void aVoid) {
+            Cursor cursor = getActivity().getContentResolver().query(ResultContract.ResultEntry.CONTENT_URI,null,null,null,null);
+            if(cursor.moveToFirst()){
                 ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
-                actionBar.setTitle(bundle.getString("M_TITLE"));
+                actionBar.setTitle(cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_BOOK_TITLE)));
 
                 if(getActivity().findViewById(R.id.container_x)!=null){
                     BookFragment bookFragment = new BookFragment();
                     Bundle b_bundle = new Bundle();
-                    b_bundle.putString("ISBN", bundle.getString("M_ISBN_13"));
+                    b_bundle.putString("ISBN", cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_ID)));
                     bookFragment.setArguments(b_bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .add(R.id.container_x, bookFragment)
                             .commit();
                 }
+
+                String [] m_title = new String[cursor.getCount()-1];
+                String [] m_isbn = new String[cursor.getCount()-1];
+                String [] m_rate = new String[cursor.getCount()-1];
+                String [] m_img = new String[cursor.getCount()-1];
+                String [] m_author = new String[cursor.getCount()-1];
+                int w=0;
+                while(cursor.moveToNext()){
+                    m_title[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_BOOK_TITLE));
+                    m_isbn[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_ID));
+                    m_rate[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_RATING));
+                    m_img[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_IMG));
+                    m_author[w++]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_AUTHOR));
+                };
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("M_SIMILAR_TITLE",m_title);
+                bundle.putStringArray("M_SIMILAR_ISBN_13",m_isbn);
+                bundle.putStringArray("M_SIMILAR_RATING",m_rate);
+                bundle.putStringArray("M_SIMILAR_IMAGE_URL",m_img);
+                bundle.putStringArray("M_SIMILAR_AUTHOR_NAME",m_author);
 
                 final ResultAdapter adapter = new ResultAdapter(bundle,context);
                 progressDialog.dismiss();

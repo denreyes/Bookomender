@@ -27,11 +27,9 @@ public class ResultContract {
         public static final String TABLE_NAME = "result";
 
         public static final String COLUMN_BOOK_TITLE = "book_title";
-        public static final String COLUMN_DESC = "description";
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_ID = "id";
-        public static final String COLUMN_S_IMG = "img";
-        public static final String COLUMN_L_IMG = "img";
+        public static final String COLUMN_IMG = "img";
     }
 }
