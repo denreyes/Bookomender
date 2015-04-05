@@ -68,7 +68,7 @@ public class BookFragment extends Fragment {
         return rootView;
     }
 
-    public void AddBook(){
+    public void addBook(){
         BookDBHelper bookDBHelper = new BookDBHelper(getActivity());
         SQLiteDatabase sqLiteDatabase = bookDBHelper.getWritableDatabase();
 
@@ -111,7 +111,6 @@ public class BookFragment extends Fragment {
         @Override
         protected Bundle doInBackground(String... params) {
             try {
-                Log.v("OI",params[0]);
                 bundle = getItems(connectGoodreads(params[0]));
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Error ", e);
@@ -198,7 +197,6 @@ public class BookFragment extends Fragment {
                 }else{
                     img = img.replace("s/", "l/");
                     img = img.replace("kl/", "ks/");}
-                Log.v(LOG_TAG,img);
                 String authorName = null;
                 JSONObject jsonAuthors = jsonBook.getJSONObject(M_AUTHORS);
 
@@ -242,7 +240,6 @@ public class BookFragment extends Fragment {
                 String text = Jsoup.parse(bundle.getString("M_DESC").replaceAll("(?i)<br[^>]*>", "CH4NG3S")
                         .replaceAll("<p>", "CH4NG3S").replaceAll("</p>", "CH4NG3SCH4NG3S")).text();
                 post_desc = text.replaceAll("CH4NG3S", "\n").replaceAll("â", "'");
-                Log.v("OY",post_desc);
 
                 post_author = bundle.getString("M_AUTHOR_NAME");
                 post_rate = bundle.getString("M_RATE");

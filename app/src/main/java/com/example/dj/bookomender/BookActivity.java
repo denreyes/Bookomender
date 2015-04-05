@@ -39,7 +39,7 @@ public class BookActivity extends ActionBarActivity{
                 finish();
                 break;
             case R.id.action_add:
-                bookFragment.AddBook();
+                bookFragment.addBook();
                 break;
         }
         return true;
