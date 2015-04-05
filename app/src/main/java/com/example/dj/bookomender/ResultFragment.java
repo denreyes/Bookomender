@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -39,9 +42,26 @@ import java.util.Random;
 /**
  * Created by DJ on 3/10/2015.
  */
-public class ResultFragment extends Fragment{
+public class ResultFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int RESULT_LOADER = 0;
 
+    private static final String[] RESULT_COLUMNS = {
+            ResultContract.ResultEntry.TABLE_NAME + "." + ResultContract.ResultEntry._ID,
+            ResultContract.ResultEntry.COLUMN_BOOK_TITLE,
+            ResultContract.ResultEntry.COLUMN_AUTHOR,
+            ResultContract.ResultEntry.COLUMN_RATING,
+            ResultContract.ResultEntry.COLUMN_ID,
+            ResultContract.ResultEntry.COLUMN_IMG
+    };
+
+    static final int COL_ID = 0;
+    static final int COL_TITLE = 1;
+    static final int COL_AUTHOR = 2;
+    static final int COL_RATING = 3;
+    static final int COL_ISBN = 4;
+    static final int COL_IMG = 5;
+
+    ResultAdapter adapter;
     String searchIsbn;
     ListView listResult;
     LayoutInflater inflater;
@@ -58,7 +78,6 @@ public class ResultFragment extends Fragment{
         search = getArguments().getString("SEARCH");
 
         listResult = (ListView)rootView.findViewById(R.id.listview_search_result);
-        getActivity().getContentResolver().delete(ResultContract.ResultEntry.CONTENT_URI,null,null);
         SearchTask searchTask = new SearchTask(getActivity(),listResult);
         searchTask.execute(search);
 
@@ -68,6 +87,12 @@ public class ResultFragment extends Fragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().getContentResolver().delete(ResultContract.ResultEntry.CONTENT_URI,null,null);
     }
 
     public void onItemClick(){
@@ -84,6 +109,29 @@ public class ResultFragment extends Fragment{
             i.putExtra("ISBN",searchIsbn);
             getActivity().startActivity(i);
         }
+    }
+
+    //Cursor Loader
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                ResultContract.ResultEntry.CONTENT_URI,
+                RESULT_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v("YO","In onLoadFinished");
+
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader loader) {
+        adapter.swapCursor(null);
     }
 
     public class SearchTask extends AsyncTask<String,Void,Void> {
@@ -355,30 +403,28 @@ public class ResultFragment extends Fragment{
                             .add(R.id.container_x, bookFragment)
                             .commit();
                 }
-
-                String [] m_title = new String[cursor.getCount()-1];
-                String [] m_isbn = new String[cursor.getCount()-1];
-                String [] m_rate = new String[cursor.getCount()-1];
-                String [] m_img = new String[cursor.getCount()-1];
-                String [] m_author = new String[cursor.getCount()-1];
-                int w=0;
-                while(cursor.moveToNext()){
-                    m_title[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_BOOK_TITLE));
-                    m_isbn[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_ID));
-                    m_rate[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_RATING));
-                    m_img[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_IMG));
-                    m_author[w++]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_AUTHOR));
-                };
-                Bundle bundle = new Bundle();
-                bundle.putStringArray("M_SIMILAR_TITLE",m_title);
-                bundle.putStringArray("M_SIMILAR_ISBN_13",m_isbn);
-                bundle.putStringArray("M_SIMILAR_RATING",m_rate);
-                bundle.putStringArray("M_SIMILAR_IMAGE_URL",m_img);
-                bundle.putStringArray("M_SIMILAR_AUTHOR_NAME",m_author);
-
-                final ResultAdapter adapter = new ResultAdapter(bundle,context);
+//                String [] m_title = new String[cursor.getCount()-1];
+//                String [] m_isbn = new String[cursor.getCount()-1];
+//                String [] m_rate = new String[cursor.getCount()-1];
+//                String [] m_img = new String[cursor.getCount()-1];
+//                String [] m_author = new String[cursor.getCount()-1];
+//                int w=0;
+//                while(cursor.moveToNext()){
+//                    m_title[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_BOOK_TITLE));
+//                    m_isbn[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_ID));
+//                    m_rate[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_RATING));
+//                    m_img[w]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_IMG));
+//                    m_author[w++]=cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_AUTHOR));
+//                };
+//                Bundle bundle = new Bundle();
+//                bundle.putStringArray("M_SIMILAR_TITLE",m_title);
+//                bundle.putStringArray("M_SIMILAR_ISBN_13",m_isbn);
+//                bundle.putStringArray("M_SIMILAR_RATING",m_rate);
+//                bundle.putStringArray("M_SIMILAR_IMAGE_URL",m_img);
+//                bundle.putStringArray("M_SIMILAR_AUTHOR_NAME",m_author);
+                adapter = new ResultAdapter(getActivity(),cursor,false);
                 progressDialog.dismiss();
-                listResult.setAdapter(adapter   );
+                listResult.setAdapter(adapter);
                 listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

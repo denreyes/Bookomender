@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +32,6 @@ public class SaveDetailFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book, container, false);
-        Toast.makeText(getActivity(), getActivity().getLocalClassName(),Toast.LENGTH_LONG).show();
 
         txtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
         txtAuthor = (TextView) rootView.findViewById(R.id.txtAuthor);
