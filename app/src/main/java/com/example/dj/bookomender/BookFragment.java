@@ -285,8 +285,9 @@ public class BookFragment extends Fragment {
             try {
                 bookView.setVisibility(View.VISIBLE);
             }catch (NullPointerException e){
-                if(getActivity().getLocalClassName().equals("BookActivity"))
+                if(getActivity().getLocalClassName().equals("BookActivity")) {
                     getActivity().finish();
+                }
             }
         }
     }
