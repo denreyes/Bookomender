@@ -13,9 +13,6 @@
         <provider android:name="com.example.dj.bookomender.BookProvider"
             android:authorities="com.example.dj.bookomender.BookProvider" />
 
-        <provider android:name="com.example.dj.bookomender.ResultProvider"
-            android:authorities="com.example.dj.bookomender.ResultProvider" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

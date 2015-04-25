@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  */
 public class ResultContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.dj.bookomender.ResultProvider";
+    public static final String CONTENT_AUTHORITY = "com.example.dj.bookomender.BookProvider";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
