@@ -30,6 +30,8 @@
         </activity>
         <activity android:name=".BookActivity" />
         <activity android:name=".SaveDetailActivity" />
+        <service android:name=".BookIntentService"/>
+        <service android:name=".MainIntentService"/>
     </application>
 
 </manifest>
