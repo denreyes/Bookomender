@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -111,7 +112,7 @@ public class ResultFragment extends Fragment implements LoaderManager.LoaderCall
 
     //Cursor Loader
     @Override
-    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(),
                 ResultContract.ResultEntry.CONTENT_URI,
                 RESULT_COLUMNS,
@@ -129,6 +130,36 @@ public class ResultFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(android.support.v4.content.Loader loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        final Cursor cursor = getActivity().getContentResolver().query(ResultContract.ResultEntry.CONTENT_URI,null,null,null,null);
+        if(cursor.moveToFirst()) {
+            adapter = new ResultAdapter(getActivity(), cursor, false);
+            listResult.setAdapter(adapter);
+            listResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String isbn = cursor.getString(cursor.getColumnIndex(ResultContract.ResultEntry.COLUMN_ID));
+                    if (getActivity().findViewById(R.id.container_x) != null) {
+                        bookFragment = new BookFragment();
+                        Bundle b_bundle = new Bundle();
+                        b_bundle.putString("ISBN", isbn);
+                        bookFragment.setArguments(b_bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .add(R.id.container_x, bookFragment)
+                                .commit();
+                    } else {
+                        Intent i = new Intent(getActivity(), BookActivity.class);
+                        i.putExtra("ISBN", isbn);
+                        getActivity().startActivity(i);
+                    }
+                }
+            });
+        }
     }
 
     public void addBook() {

@@ -54,9 +54,6 @@ public class BookFragment extends Fragment {
         txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
         imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
 
-//        BookTask searchTask = new BookTask();
-//        searchTask.execute(isbn);
-
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BookIntentService.TRANSACTION_DONE);
         getActivity().registerReceiver(bookReceiver, intentFilter);

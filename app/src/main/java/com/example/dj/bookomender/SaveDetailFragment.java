@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,28 +41,32 @@ public class SaveDetailFragment extends Fragment{
         txtDescription = (TextView) rootView.findViewById(R.id.txtDescription);
         imgBook = (ImageView) rootView.findViewById(R.id.imgBook);
 
-            if (getActivity().findViewById(R.id.container_x) != null)
+            if (getActivity().findViewById(R.id.container_x) != null) {
                 layoutView = (LinearLayout) rootView.findViewById(R.id.linearBookView);
-            else
+                Log.v("UH", "LL");
+            }
+            else {
                 layoutView = (ScrollView) rootView.findViewById(R.id.scrollBookView);
+            }
         queryList();
         return rootView;
     }
 
     public void delete(){
-        new BookDBHelper(getActivity()).getReadableDatabase().delete(BookContract.BookEntry.TABLE_NAME,
-                "_id = " + getArguments().getString("ID"), null);
-        if(getActivity().findViewById(R.id.container_x)!=null)
+        getActivity().getContentResolver().delete(ResultContract.ResultEntry.CONTENT_URI,
+                "_id = " + getArguments().getString("ID"),null);
+        if(getActivity().findViewById(R.id.container_x)!=null) {
             layoutView.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void queryList(){
-
-        cursor = new BookDBHelper(getActivity()).getReadableDatabase().
-                query(BookContract.BookEntry.TABLE_NAME, null, "_id = " + getArguments().getString("ID") , null, null, null, null);
+        cursor = getActivity().getContentResolver().
+                query(BookContract.BookEntry.CONTENT_URI, null, "_id = " + getArguments().getString("ID"),null,null);
         if(cursor.moveToFirst()){
             try{
-                layoutView.setVisibility(View.VISIBLE);}
+                layoutView.setVisibility(View.VISIBLE);
+            }
             catch (NullPointerException e){
                 getActivity().finish();
             }

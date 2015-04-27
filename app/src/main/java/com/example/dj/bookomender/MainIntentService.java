@@ -51,7 +51,6 @@ public class MainIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Log.v("NEW","NEW");
         Bundle bundle = null;
         urlConnection = null;
         reader = null;
@@ -70,7 +69,6 @@ public class MainIntentService extends IntentService {
 
             resultJsonStr = getJsonString(url);
 
-            Log.v("HERE","HERE");
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return;
@@ -94,7 +92,6 @@ public class MainIntentService extends IntentService {
                 e.printStackTrace();
             }
 
-            Log.v("FINALY","FINALY");
             notifyFinished();
         }
     }
@@ -102,7 +99,6 @@ public class MainIntentService extends IntentService {
     public static final String TRANSACTION_DONE =
             "com.example.dj.bookomender.MAIN_TRANSACTION_DONE";
     private void notifyFinished(){
-        Log.v("NOTIFIED","NOTIFIED");
         Intent i = new Intent(TRANSACTION_DONE);
         i.putExtra("ISBN",bookIsbn);
         i.putExtra("BOOK_TITLE",bookTitle);

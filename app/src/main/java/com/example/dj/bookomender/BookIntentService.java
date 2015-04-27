@@ -62,6 +62,7 @@ public class BookIntentService extends IntentService {
     private void notifyFinished(Bundle bundle){
         Intent i = new Intent(TRANSACTION_DONE);
         i.putExtras(bundle);
+
         BookIntentService.this.sendBroadcast(i);
     }
 
