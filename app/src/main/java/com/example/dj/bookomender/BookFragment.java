@@ -30,7 +30,7 @@ import java.util.Random;
 /**
  * Created by DJ on 3/16/2015.
  */
-public class BookFragment extends Fragment {
+public class BookFragment extends Fragment{
     String isbn;
     TextView txtTitle,txtAuthor,txtRating,txtDescription,txtSRating;
     ImageView imgBook;
