@@ -42,16 +42,7 @@ public class MainFragment extends Fragment{
             public void onClick(View v) {
                 String search = edtSearch.getText().toString();
                 if(search.isEmpty()){
-                    int rnd, max = 3, min = 1;
-                    rnd = new Random().nextInt((max - min + 1) + min);
-                    String toastMsg;
-                    if(rnd==1)
-                        toastMsg="Come on, there's bound to be some book you know of right?";
-                    else if(rnd==2)
-                        toastMsg="You need to give me something, dear.";
-                    else
-                        toastMsg="There isn't a book that hasn't got any title, dear.";
-                    Toast.makeText(getActivity(),toastMsg,Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"Input a book or something.",Toast.LENGTH_LONG).show();
                 }else {
 
                     IntentFilter intentFilter = new IntentFilter();

@@ -70,7 +70,7 @@ public class MainIntentService extends IntentService {
             resultJsonStr = getJsonString(url);
 
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
+            Log.e(LOG_TAG, "Error connecting to network", e);
             return;
         }
         finally{
